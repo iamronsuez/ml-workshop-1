@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Zap, DollarSign, ShoppingCart, ArrowRight, Clock, Users, Target, Sparkles } from 'lucide-react';
+import { Zap, DollarSign, ShoppingCart, ArrowRight, Clock, Users, Target, Sparkles, BarChart3, Presentation, Github } from 'lucide-react';
 
 export default function Home() {
   const labs = [
@@ -62,6 +62,31 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      {/* Navigation Bar */}
+      <nav className="bg-black/20 backdrop-blur-sm border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-8 py-4">
+          <div className="flex items-center justify-between">
+            <Link href="/" className="text-white font-bold text-xl hover:text-yellow-400 transition-colors">
+              ML Workshop
+            </Link>
+            <div className="flex items-center gap-6">
+              <Link href="/slides" className="flex items-center gap-2 text-white hover:text-yellow-400 transition-colors">
+                <Presentation className="w-5 h-5" />
+                <span>Slides</span>
+              </Link>
+              <Link href="/metrics" className="flex items-center gap-2 text-white hover:text-yellow-400 transition-colors">
+                <BarChart3 className="w-5 h-5" />
+                <span>Métricas</span>
+              </Link>
+              <a href="https://github.com/iamronsuez/ml-workshop-1" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white hover:text-yellow-400 transition-colors">
+                <Github className="w-5 h-5" />
+                <span>GitHub</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-800/20 to-pink-800/20" />
