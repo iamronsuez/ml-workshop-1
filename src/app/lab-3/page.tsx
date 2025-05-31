@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft, Play, Pause, Clock, Package, TrendingUp, AlertCircle, CheckCircle, DollarSign, Home, BarChart3, Target, Users, ShoppingCart, Activity, Database, Settings, HelpCircle, LineChart, PieChart } from 'lucide-react';
+import { useSlideNavigation } from '@/hooks/useNavigation';
 
 const BancoAlimentosML = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -231,7 +232,7 @@ const BancoAlimentosML = () => {
           'Lo que aprenden hoy sirve para cualquier predicción'
         ],
         next_steps: [
-          { when: 'Hoy', action: 'Practicar con sus datos', time: '30 min' },
+          { when: 'Hoy', action: 'Practicar con sus datos', time: '20 min' },
           { when: 'Esta semana', action: 'Identificar problemas locales', time: '2 horas' },
           { when: 'Próximas 2 semanas', action: 'Formar equipos interdisciplinarios', time: 'Networking' },
           { when: 'Mes 1', action: 'Compartir lo aprendido', time: 'Workshop' }
@@ -251,20 +252,13 @@ const BancoAlimentosML = () => {
     return () => clearInterval(interval);
   }, [isPlaying]);
 
-  const nextStep = () => {
-    if (currentStep < steps.length - 1) {
-      setCompletedSteps(prev => new Set([...prev, currentStep]));
-      setCurrentStep(prev => prev + 1);
-      setTimer(0);
-    }
-  };
 
-  const prevStep = () => {
-    if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1);
-      setTimer(0);
-    }
-  };
+  // Usar el hook personalizado para navegación
+  const navigation = useSlideNavigation(steps.length, (newSlide) => {
+    console.log(`Navegando al slide ${newSlide + 1}: ${steps[newSlide].title}`);
+  });
+
+
 
   const goToStep = (index: number) => {
     setCurrentStep(index);
@@ -277,7 +271,7 @@ const BancoAlimentosML = () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const getCurrentStep = () => steps[currentStep];
+  const getCurrentStep = () => steps[navigation.currentSlide];
 
   const renderStepContent = () => {
     const step = getCurrentStep();
@@ -306,7 +300,7 @@ const BancoAlimentosML = () => {
               
               <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-6 rounded-2xl">
                 <h4 className="text-xl font-bold text-orange-600 mb-4">⏱️ Tiempo Total:</h4>
-                <div className="text-4xl font-bold text-orange-700 mb-2">30 min</div>
+                <div className="text-4xl font-bold text-orange-700 mb-2">20 min</div>
                 <p className="text-orange-600">Crear IA con impacto social real</p>
               </div>
             </div>
@@ -746,13 +740,13 @@ const BancoAlimentosML = () => {
       <div className="bg-white/10 p-4">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-white font-medium">Progreso: Paso {currentStep + 1} de {steps.length}</span>
-            <span className="text-white/70">{Math.round(((currentStep + 1) / steps.length) * 100)}% completado</span>
+            <span className="text-white font-medium">Progreso: Paso {navigation.currentSlide + 1} de {steps.length}</span>
+            <span className="text-white/70">{Math.round(((navigation.currentSlide + 1) / steps.length) * 100)}% completado</span>
           </div>
           <div className="w-full bg-white/20 rounded-full h-3">
             <div
               className="bg-gradient-to-r from-yellow-400 to-orange-500 h-3 rounded-full transition-all duration-500"
-              style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+              style={{ width: `${((navigation.currentSlide + 1) / steps.length) * 100}%` }}
             />
           </div>
         </div>
@@ -765,9 +759,9 @@ const BancoAlimentosML = () => {
             {steps?.map((step, index) => (
               <button
                 key={step.id}
-                onClick={() => goToStep(index)}
+                onClick={() => navigation.goToSlide(index)}
                 className={`flex-shrink-0 flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ${
-                  currentStep === index
+                  navigation.currentSlide === index
                     ? 'bg-white text-gray-800 shadow-lg'
                     : completedSteps.has(index)
                     ? 'bg-green-500 text-white'
@@ -788,7 +782,7 @@ const BancoAlimentosML = () => {
           {/* Step Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center space-x-3 bg-gray-100 rounded-full px-6 py-2 mb-4">
-              <span className="font-bold text-gray-700">Paso {currentStep + 1}</span>
+              <span className="font-bold text-gray-700">Paso {navigation.currentSlide+ 1}</span>
               <span className="text-gray-500">•</span>
               <span className="text-gray-600">{getCurrentStep().duration}</span>
             </div>
@@ -804,37 +798,53 @@ const BancoAlimentosML = () => {
         </div>
       </div>
 
-      {/* Navigation Footer */}
-      <div className="bg-white/95 backdrop-blur-sm p-6 border-t border-gray-200">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <button
-            onClick={prevStep}
-            disabled={currentStep === 0}
-            className="flex items-center space-x-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
-          >
-            <ChevronLeft size={20} />
-            <span>Paso Anterior</span>
-          </button>
-
-          <div className="text-center">
-            <p className="text-gray-600 mb-2">¿Completaste este paso?</p>
-            <button
-              onClick={() => setCompletedSteps(prev => new Set([...prev, currentStep]))}
-              disabled={completedSteps.has(currentStep)}
-              className="px-4 py-2 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white rounded-lg transition-colors"
-            >
-              {completedSteps.has(currentStep) ? '✅ Completado' : 'Marcar como Completado'}
-            </button>
+      {/* Navigation */}
+      <div className="bg-white/95 backdrop-blur-sm p-4">
+        <div className="max-w-7xl mx-auto">
+          {/* Progress Bar */}
+          <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+            <div
+              className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${((navigation.currentSlide + 1) / steps.length) * 100}%` }}
+            />
           </div>
 
-          <button
-            onClick={nextStep}
-            disabled={currentStep === steps.length - 1}
-            className="flex items-center space-x-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
-          >
-            <span>Siguiente Paso</span>
-            <ChevronRight size={20} />
-          </button>
+          {/* Navigation Controls */}
+          <div className="flex items-center justify-between">
+            <button
+              onClick={navigation.prevSlide}
+              disabled={navigation.currentSlide === 0}
+              className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
+            >
+              <ChevronLeft size={20} />
+              <span>Anterior</span>
+            </button>
+
+            {/* Slide Indicators */}
+            <div className="flex space-x-2 overflow-x-auto max-w-md">
+              {steps?.map((slide, index) => (
+                <button
+                  key={slide?.id}
+                  onClick={() => navigation.goToSlide(index)}
+                  className={`w-3 h-3 rounded-full transition-all ${
+                    navigation.currentSlide === index
+                      ? 'bg-purple-500 scale-125'
+                      : 'bg-gray-300 hover:bg-gray-400'
+                  }`}
+                  title={`Slide ${index + 1}: ${slide?.title}`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={navigation.nextSlide}
+              disabled={navigation.currentSlide === steps.length - 1}
+              className="flex items-center space-x-2 px-4 py-2 bg-purple-500 hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+            >
+              <span>Siguiente</span>
+              <ChevronRight size={20} />
+            </button>
+          </div>
         </div>
       </div>
     </div>

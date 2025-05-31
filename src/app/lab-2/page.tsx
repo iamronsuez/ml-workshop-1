@@ -1,13 +1,12 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft, Zap, TrendingUp, AlertCircle, CheckCircle, DollarSign, Home, BarChart3, Target, Users, Lightbulb, Battery, Activity, Clock, Play, Pause } from 'lucide-react';
+import { useSlideNavigation } from '@/hooks/useNavigation';
 
 const PrestamosPredictorIA = () => {
-  const [currentSection, setCurrentSection] = useState(0);
   const [selectedRisk, setSelectedRisk] = useState(null);
   const [animatedMetric, setAnimatedMetric] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [timer, setTimer] = useState(0);
   const [completedSections, setCompletedSections] = useState(new Set());
   const [userProfile, setUserProfile] = useState({
     income: 60000,
@@ -67,42 +66,27 @@ const PrestamosPredictorIA = () => {
     }
   ];
 
+  // Usar el hook personalizado para navegación
+  const navigation = useSlideNavigation(sections.length, (newSlide) => {
+    console.log(`Navegando al slide ${newSlide + 1}: ${sections[newSlide].title}`);
+  });
+
   useEffect(() => {
     const animTimer = setTimeout(() => {
       setAnimatedMetric(83);
     }, 500);
     return () => clearTimeout(animTimer);
-  }, [currentSection]);
+  }, [navigation.currentSlide]);
 
   useEffect(() => {
     let interval = undefined;
     if (isPlaying) {
       interval = setInterval(() => {
-        setTimer(prev => prev + 1);
+        navigation.setTimer(prev => prev + 1);
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [isPlaying]);
-
-  const nextSection = () => {
-    if (currentSection < sections.length - 1) {
-      setCompletedSections(prev => new Set([...prev, currentSection]));
-      setCurrentSection(prev => prev + 1);
-      setTimer(0);
-    }
-  };
-
-  const prevSection = () => {
-    if (currentSection > 0) {
-      setCurrentSection(prev => prev - 1);
-      setTimer(0);
-    }
-  };
-
-  const goToSection = (index: number) => {
-    setCurrentSection(index);
-    setTimer(0);
-  };
+  }, [isPlaying, navigation]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -110,7 +94,7 @@ const PrestamosPredictorIA = () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const getCurrentSection = () => sections[currentSection];
+  const getCurrentSection = () => sections[navigation.currentSlide];
 
   const calculateRisk = () => {
     const ratio = userProfile.loanAmount / userProfile.income;
@@ -119,7 +103,7 @@ const PrestamosPredictorIA = () => {
   };
 
   const renderContent = () => {
-    const section = sections[currentSection];
+    const section = sections[navigation.currentSlide];
 
     switch (section.content) {
       case 'intro':
@@ -859,7 +843,7 @@ const PrestamosPredictorIA = () => {
             <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-2">
               <Clock className="w-4 h-4" />
               <span className="text-sm text-gray-600">Timer:</span>
-              <span className="font-mono text-sm font-bold">{formatTime(timer)}</span>
+              <span className="font-mono text-sm font-bold">{formatTime(navigation.timer)}</span>
               <button
                 onClick={() => setIsPlaying(!isPlaying)}
                 className={`p-1 rounded ${isPlaying ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}
@@ -879,13 +863,13 @@ const PrestamosPredictorIA = () => {
       <div className="bg-white/10 p-4">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-white font-medium">Progreso: Sección {currentSection + 1} de {sections.length}</span>
-            <span className="text-white/70">{Math.round(((currentSection + 1) / sections.length) * 100)}% completado</span>
+            <span className="text-white font-medium">Progreso: Sección {navigation.currentSlide + 1} de {sections.length}</span>
+            <span className="text-white/70">{Math.round(((navigation.currentSlide + 1) / sections.length) * 100)}% completado</span>
           </div>
           <div className="w-full bg-white/20 rounded-full h-3">
             <div
               className="bg-gradient-to-r from-yellow-400 to-orange-500 h-3 rounded-full transition-all duration-500"
-              style={{ width: `${((currentSection + 1) / sections.length) * 100}%` }}
+              style={{ width: `${((navigation.currentSlide + 1) / sections.length) * 100}%` }}
             />
           </div>
         </div>
@@ -898,9 +882,9 @@ const PrestamosPredictorIA = () => {
             {sections.map((section, index) => (
               <button
                 key={section.id}
-                onClick={() => goToSection(index)}
+                onClick={() => navigation.goToSlide(index)}
                 className={`flex-shrink-0 flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ${
-                  currentSection === index
+                  navigation.currentSlide === index
                     ? 'bg-white text-gray-800 shadow-lg'
                     : completedSections.has(index)
                     ? 'bg-green-500 text-white'
@@ -921,7 +905,7 @@ const PrestamosPredictorIA = () => {
           {/* Section Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center space-x-3 bg-gray-100 rounded-full px-6 py-2 mb-4">
-              <span className="font-bold text-gray-700">Sección {currentSection + 1}</span>
+              <span className="font-bold text-gray-700">Sección {navigation.currentSlide + 1}</span>
               <span className="text-gray-500">•</span>
               <span className="text-gray-600">{getCurrentSection().duration}</span>
             </div>
@@ -937,37 +921,53 @@ const PrestamosPredictorIA = () => {
         </div>
       </div>
 
-      {/* Navigation Footer */}
-      <div className="bg-white/95 backdrop-blur-sm p-6 border-t border-gray-200">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <button
-            onClick={prevSection}
-            disabled={currentSection === 0}
-            className="flex items-center space-x-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
-          >
-            <ChevronLeft size={20} />
-            <span>Sección Anterior</span>
-          </button>
-
-          <div className="text-center">
-            <p className="text-gray-600 mb-2">¿Completaste esta sección?</p>
-            <button
-              onClick={() => setCompletedSections(prev => new Set([...prev, currentSection]))}
-              disabled={completedSections.has(currentSection)}
-              className="px-4 py-2 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white rounded-lg transition-colors"
-            >
-              {completedSections.has(currentSection) ? '✅ Completado' : 'Marcar como Completado'}
-            </button>
+      {/* Navigation */}
+      <div className="bg-white/95 backdrop-blur-sm p-4">
+        <div className="max-w-7xl mx-auto">
+          {/* Progress Bar */}
+          <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+            <div
+              className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${navigation.progress}%` }}
+            />
           </div>
 
-          <button
-            onClick={nextSection}
-            disabled={currentSection === sections.length - 1}
-            className="flex items-center space-x-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
-          >
-            <span>Siguiente Sección</span>
-            <ChevronRight size={20} />
-          </button>
+          {/* Navigation Controls */}
+          <div className="flex items-center justify-between">
+            <button
+              onClick={navigation.prevSlide}
+              disabled={navigation.currentSlide === 0}
+              className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
+            >
+              <ChevronLeft size={20} />
+              <span>Anterior</span>
+            </button>
+
+            {/* Slide Indicators */}
+            <div className="flex space-x-2 overflow-x-auto max-w-md">
+              {sections?.map((slide, index) => (
+                <button
+                  key={slide?.id}
+                  onClick={() => navigation.goToSlide(index)}
+                  className={`w-3 h-3 rounded-full transition-all ${
+                    navigation.currentSlide === index
+                      ? 'bg-purple-500 scale-125'
+                      : 'bg-gray-300 hover:bg-gray-400'
+                  }`}
+                  title={`Slide ${index + 1}: ${slide?.title}`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={navigation.nextSlide}
+              disabled={navigation.currentSlide === sections.length - 1}
+              className="flex items-center space-x-2 px-4 py-2 bg-purple-500 hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+            >
+              <span>Siguiente</span>
+              <ChevronRight size={20} />
+            </button>
+          </div>
         </div>
       </div>
     </div>
