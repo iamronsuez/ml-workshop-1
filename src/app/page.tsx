@@ -78,6 +78,10 @@ export default function Home() {
                 <BarChart3 className="w-5 h-5" />
                 <span>Métricas</span>
               </Link>
+              <Link href="/percentiles" className="flex items-center gap-2 text-white hover:text-yellow-400 transition-colors">
+                <BarChart3 className="w-5 h-5" />
+                <span>Percentiles</span>
+              </Link>
               <a href="https://github.com/iamronsuez/ml-workshop-1" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white hover:text-yellow-400 transition-colors">
                 <Github className="w-5 h-5" />
                 <span>GitHub</span>
