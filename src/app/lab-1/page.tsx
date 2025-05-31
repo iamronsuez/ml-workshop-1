@@ -201,7 +201,7 @@ const TutorialEnergiaML = () => {
   ];
 
   useEffect(() => {
-    let interval;
+    let interval = undefined;
     if (isPlaying) {
       interval = setInterval(() => {
         setTimer(prev => prev + 1);
@@ -225,12 +225,12 @@ const TutorialEnergiaML = () => {
     }
   };
 
-  const goToStep = (index) => {
+  const goToStep = (index: number) => {
     setCurrentStep(index);
     setTimer(0);
   };
 
-  const formatTime = (seconds) => {
+  const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
@@ -247,9 +247,9 @@ const TutorialEnergiaML = () => {
           <div className="space-y-8">
             <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-8 rounded-2xl">
               <h3 className="text-2xl font-bold text-purple-600 mb-4">🤔 Pregunta para Reflexionar:</h3>
-              <p className="text-lg text-purple-700 mb-6">{step.content.hook}</p>
+              <p className="text-lg text-purple-700 mb-6">{step?.content?.hook}</p>
               <div className="bg-white p-4 rounded-lg">
-                <p className="text-purple-800 font-medium">{step.content.objective}</p>
+                <p className="text-purple-800 font-medium">{step?.content?.objective}</p>
               </div>
             </div>
             
@@ -257,7 +257,7 @@ const TutorialEnergiaML = () => {
               <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-2xl">
                 <h4 className="text-xl font-bold text-green-600 mb-4">✅ Lo que lograremos:</h4>
                 <ul className="space-y-2">
-                  {step.content.benefits.map((benefit, idx) => (
+                  {step?.content?.benefits?.map((benefit, idx) => (
                     <li key={idx} className="text-green-700">{benefit}</li>
                   ))}
                 </ul>
@@ -276,14 +276,14 @@ const TutorialEnergiaML = () => {
         return (
           <div className="space-y-8">
             <div className="text-center bg-gradient-to-r from-red-50 to-pink-50 p-8 rounded-2xl">
-              <h3 className="text-3xl font-bold text-red-600 mb-4">{step.content.dilemma}</h3>
-              <p className="text-lg text-red-700">Escenario: {step.content.scenario}</p>
+              <h3 className="text-3xl font-bold text-red-600 mb-4">{step?.content?.dilemma}</h3>
+              <p className="text-lg text-red-700">Escenario: {step?.content?.scenario}</p>
             </div>
             
             <div className="bg-blue-50 p-6 rounded-2xl">
               <h4 className="text-xl font-bold text-blue-600 mb-4">🧠 Datos Críticos que Debes Saber:</h4>
               <div className="space-y-3">
-                {step.content.critical_facts.map((fact, idx) => (
+                {step?.content?.critical_facts?.map((fact, idx) => (
                   <div key={idx} className="bg-white p-3 rounded-lg text-blue-800">
                     • {fact}
                   </div>
@@ -292,7 +292,7 @@ const TutorialEnergiaML = () => {
             </div>
             
             <div className="grid md:grid-cols-3 gap-6">
-              {step.content.consequences.map((consequence, idx) => (
+              {step?.content?.consequences?.map((consequence, idx) => (
                 <div key={idx} className={`p-6 rounded-2xl border-2 ${
                   consequence.severity === 'high' ? 'bg-red-50 border-red-200' :
                   consequence.severity === 'medium' ? 'bg-yellow-50 border-yellow-200' :
@@ -322,16 +322,16 @@ const TutorialEnergiaML = () => {
                 <h4 className="text-xl font-bold text-purple-600 mb-4">📁 Nuestro Dataset</h4>
                 <div className="space-y-3">
                   <div className="bg-white p-3 rounded-lg">
-                    <strong>Archivo:</strong> {step.content.dataset_info.file}
+                    <strong>Archivo:</strong> {step?.content?.dataset_info?.file}
                   </div>
                   <div className="bg-white p-3 rounded-lg">
-                    <strong>Registros:</strong> {step.content.dataset_info.rows}
+                    <strong>Registros:</strong> {step?.content?.dataset_info?.rows}
                   </div>
                   <div className="bg-white p-3 rounded-lg">
-                    <strong>Periodo:</strong> {step.content.dataset_info.days}
+                    <strong>Periodo:</strong> {step?.content?.dataset_info?.days}
                   </div>
                   <div className="bg-white p-3 rounded-lg">
-                    <strong>Fuente:</strong> {step.content.dataset_info.source}
+                    <strong>Fuente:</strong> {step?.content?.dataset_info?.source}
                   </div>
                 </div>
               </div>
@@ -339,7 +339,7 @@ const TutorialEnergiaML = () => {
               <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-2xl">
                 <h4 className="text-xl font-bold text-green-600 mb-4">🏗️ Estructura de Datos</h4>
                 <div className="space-y-3">
-                  {step.content.structure.map((col, idx) => (
+                  {step?.content?.structure?.map((col, idx) => (
                     <div key={idx} className="bg-white p-3 rounded-lg">
                       <div className="font-bold text-green-800">{col.column}</div>
                       <div className="text-sm text-gray-600">{col.type}</div>
@@ -353,7 +353,7 @@ const TutorialEnergiaML = () => {
             <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-8 rounded-2xl">
               <h4 className="text-xl font-bold text-orange-600 mb-4">⏰ ¿Por qué 30 minutos es Crítico?</h4>
               <div className="grid md:grid-cols-3 gap-4">
-                {step.content.why_30min.map((reason, idx) => (
+                {step?.content?.why_30min?.map((reason, idx) => (
                   <div key={idx} className="bg-white p-4 rounded-lg text-orange-800">
                     {reason}
                   </div>
@@ -368,14 +368,14 @@ const TutorialEnergiaML = () => {
           <div className="space-y-8">
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-8 rounded-2xl">
               <h3 className="text-2xl font-bold text-indigo-600 mb-4">🎯 Acción a Realizar:</h3>
-              <p className="text-lg text-indigo-700">{step.content.action}</p>
+              <p className="text-lg text-indigo-700">{step?.content?.action}</p>
             </div>
             
             <div className="grid md:grid-cols-1 gap-6">
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
                 <h4 className="text-lg font-bold text-gray-800 mb-4">📋 Pasos Detallados:</h4>
                 <div className="space-y-3">
-                  {(step.content.details || step.content.process || []).map((detail, idx) => (
+                  {(step?.content?.details || step?.content?.process || []).map((detail, idx) => (
                     <div key={idx} className="flex items-start space-x-3">
                       <div className="w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
                         {idx + 1}
@@ -387,20 +387,20 @@ const TutorialEnergiaML = () => {
               </div>
             </div>
             
-            {step.content.settings && (
+            {step?.content?.settings && (
               <div className="bg-purple-50 p-6 rounded-2xl">
                 <h4 className="text-lg font-bold text-purple-600 mb-4">⚙️ Configuraciones:</h4>
                 <div className="grid md:grid-cols-2 gap-4">
-                  {step.content.settings.map((setting, idx) => (
+                  {step?.content?.settings.map((setting, idx) => (
                     <div key={idx} className="bg-white p-4 rounded-lg">
                       <div className="font-bold text-purple-800">{setting.setting}: {setting.value}</div>
                       <div className="text-sm text-purple-600">{setting.explanation}</div>
                     </div>
                   ))}
                 </div>
-                {step.content.why_these_settings && (
+                {step?.content?.why_these_settings && (
                   <div className="mt-4 bg-purple-100 p-4 rounded-lg">
-                    <p className="text-purple-800">{step.content.why_these_settings}</p>
+                    <p className="text-purple-800">{step?.content?.why_these_settings}</p>
                   </div>
                 )}
               </div>
@@ -408,10 +408,10 @@ const TutorialEnergiaML = () => {
             
             <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-2xl">
               <h4 className="text-lg font-bold text-green-600 mb-2">✅ Resultado Esperado:</h4>
-              <p className="text-green-700">{step.content.expected_result}</p>
-              {step.content.tip && (
+              <p className="text-green-700">{step?.content?.expected_result}</p>
+              {step?.content?.tip && (
                 <div className="mt-3 bg-green-100 p-3 rounded-lg">
-                  <p className="text-green-800"><strong>💡 Tip:</strong> {step.content.tip}</p>
+                  <p className="text-green-800"><strong>💡 Tip:</strong> {step?.content?.tip}</p>
                 </div>
               )}
             </div>
@@ -422,7 +422,7 @@ const TutorialEnergiaML = () => {
         return (
           <div className="space-y-8">
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {step.content.metrics.map((metric, idx) => (
+              {step?.content?.metrics?.map((metric, idx) => (
                 <div key={idx} className="bg-gradient-to-br from-indigo-50 to-purple-50 p-6 rounded-2xl text-center">
                   <h4 className="text-lg font-bold text-indigo-600 mb-2">{metric.name}</h4>
                   <div className="text-3xl font-bold text-indigo-800 mb-2">{metric.value}</div>
@@ -434,13 +434,13 @@ const TutorialEnergiaML = () => {
             
             <div className="bg-gradient-to-r from-orange-50 to-yellow-50 p-8 rounded-2xl">
               <h3 className="text-xl font-bold text-orange-600 mb-4">🧠 En Palabras Simples:</h3>
-              <p className="text-lg text-orange-700 mb-6">{step.content.interpretation}</p>
+              <p className="text-lg text-orange-700 mb-6">{step?.content?.interpretation}</p>
               
               <div className="bg-white p-6 rounded-lg">
-                <h4 className="text-lg font-bold text-gray-800 mb-3">{step.content.is_good.question}</h4>
-                <p className="text-xl font-bold text-green-600 mb-3">{step.content.is_good.answer}</p>
+                <h4 className="text-lg font-bold text-gray-800 mb-3">{step?.content?.is_good?.question}</h4>
+                <p className="text-xl font-bold text-green-600 mb-3">{step?.content?.is_good?.answer}</p>
                 <ul className="space-y-2">
-                  {step.content.is_good.reasons.map((reason, idx) => (
+                  {step?.content?.is_good?.reasons.map((reason, idx) => (
                     <li key={idx} className="text-gray-700">✅ {reason}</li>
                   ))}
                 </ul>
@@ -454,11 +454,11 @@ const TutorialEnergiaML = () => {
           <div className="space-y-8">
             <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-8 rounded-2xl">
               <h3 className="text-2xl font-bold text-purple-600 mb-4">🎯 Escenario de Decisión:</h3>
-              <p className="text-lg text-purple-700">{step.content.scenario}</p>
+              <p className="text-lg text-purple-700">{step?.content?.scenario}</p>
             </div>
             
             <div className="grid md:grid-cols-3 gap-6">
-              {step.content.decision_options.map((option, idx) => (
+              {step?.content?.decision_options?.map((option, idx) => (
                 <div key={idx} className="bg-white p-6 rounded-2xl shadow-lg border-2 border-gray-200 hover:border-purple-300 transition-colors cursor-pointer">
                   <h4 className="text-lg font-bold text-gray-800 mb-3">{option.option}</h4>
                   <div className="space-y-2">
@@ -478,7 +478,7 @@ const TutorialEnergiaML = () => {
             <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-2xl">
               <h4 className="text-lg font-bold text-orange-600 mb-4">🤔 Factores a Considerar:</h4>
               <div className="grid md:grid-cols-2 gap-3">
-                {step.content.factors.map((factor, idx) => (
+                {step?.content?.factors?.map((factor, idx) => (
                   <div key={idx} className="bg-white p-3 rounded-lg text-orange-800">
                     • {factor}
                   </div>
@@ -493,11 +493,11 @@ const TutorialEnergiaML = () => {
           <div className="space-y-8">
             <div className="text-center bg-gradient-to-r from-green-50 to-emerald-50 p-8 rounded-2xl">
               <h3 className="text-2xl font-bold text-green-600 mb-4">💰 Impacto Económico Real</h3>
-              <p className="text-lg text-green-700">Con {step.content.optimization}</p>
+              <p className="text-lg text-green-700">Con {step?.content?.optimization}</p>
             </div>
             
             <div className="grid md:grid-cols-2 gap-8">
-              {step.content.savings.map((saving, idx) => (
+              {step?.content?.savings?.map((saving, idx) => (
                 <div key={idx} className="bg-gradient-to-br from-blue-50 to-purple-50 p-6 rounded-2xl">
                   <h4 className="text-xl font-bold text-purple-600 mb-4">{saving.size}</h4>
                   <div className="space-y-3">
@@ -517,7 +517,7 @@ const TutorialEnergiaML = () => {
             <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-8 rounded-2xl">
               <h3 className="text-xl font-bold text-orange-600 mb-4">🌟 Impacto Social Real:</h3>
               <div className="grid md:grid-cols-2 gap-4">
-                {step.content.real_world_impact.map((impact, idx) => (
+                {step?.content?.real_world_impact?.map((impact, idx) => (
                   <div key={idx} className="bg-white p-4 rounded-lg text-orange-800">
                     {impact}
                   </div>
@@ -533,7 +533,7 @@ const TutorialEnergiaML = () => {
             <div className="bg-gradient-to-r from-green-50 to-blue-50 p-8 rounded-2xl">
               <h3 className="text-2xl font-bold text-green-600 mb-4">🎓 Lo que Acabamos de Lograr:</h3>
               <div className="grid md:grid-cols-2 gap-4">
-                {step.content.learned.map((learning, idx) => (
+                {step?.content?.learned?.map((learning, idx) => (
                   <div key={idx} className="bg-white p-4 rounded-lg flex items-center space-x-3">
                     <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0" />
                     <span className="text-green-800">{learning}</span>
@@ -545,7 +545,7 @@ const TutorialEnergiaML = () => {
             <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-8 rounded-2xl">
               <h3 className="text-2xl font-bold text-purple-600 mb-6">🚀 Tu Plan de Acción:</h3>
               <div className="space-y-4">
-                {step.content.next_steps.map((step, idx) => (
+                {step?.content?.next_steps?.map((step, idx) => (
                   <div key={idx} className="bg-white p-4 rounded-lg flex items-center justify-between">
                     <div>
                       <div className="font-bold text-purple-800">{step.when}</div>
@@ -561,7 +561,7 @@ const TutorialEnergiaML = () => {
             
             <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-8 rounded-2xl text-center">
               <h3 className="text-2xl font-bold text-orange-600 mb-4">💪 Desafío Personal:</h3>
-              <p className="text-lg text-orange-700">{step.content.challenge}</p>
+              <p className="text-lg text-orange-700">{step?.content?.challenge}</p>
             </div>
           </div>
         );
