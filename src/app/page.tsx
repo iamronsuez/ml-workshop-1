@@ -102,8 +102,8 @@ export default function Home() {
 
         <div className="grid md:grid-cols-3 gap-8">
           {labs.map((lab) => (
-            <Link key={lab.id} href={lab.href} className="block group">
-              <div className={`relative bg-gradient-to-br ${lab.color} p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 border-2 ${lab.borderColor}`}>
+            <Link key={lab.id} href={lab.href} className="block group h-full">
+              <div className={`relative bg-gradient-to-br ${lab.color} p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 border-2 ${lab.borderColor} h-full flex flex-col`}>
                 {/* Icon and Title */}
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-4">
@@ -143,7 +143,7 @@ export default function Home() {
                 </div>
 
                 {/* Footer */}
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mt-auto">
                   <div className="flex items-center space-x-2 text-gray-600">
                     <Clock className="w-4 h-4" />
                     <span className="text-sm font-medium">{lab.duration}</span>
